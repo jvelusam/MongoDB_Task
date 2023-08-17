@@ -50,33 +50,10 @@ db.Product.find({"brand"})
 db.Product.find({"brand"})
 
 //Find all products which contain the value of soft in product material 
-
-[
-  {
-    $match:
-      /**
-       * query: The query in MQL.
-       */
-      {
-        productmaterial: "Soft",
-      },
-  },
-]
-
-
+db.Product.find( { brand: { $in: [ "Apple", "OPPO" ] } } )
 // Find products which contain product color indigo  and product price 492.00
 
 
-[
-  {
-    $match:
-      /**
-       * query: The query in MQL.
-       */
-      {
-        productcolor: "indigo", 
-      },
-  },
-]
+db.Product.find( { $and : [ { $or : [ { brand : "Apple" }, { price : 492 } ] } ]})
 
 // Delete the products which product price value are same
