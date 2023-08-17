@@ -141,7 +141,40 @@ db.dashboard.insertMany([
       "images": "https://i.dummyjson.com/data/products/10/1.jpg"
     }
 ])
+
+
+db.Test.insertMany([
+ {
+  _id: ObjectId("61ba25cbfe687fce2f042414"),
+  item: 'nuts',
+  quantity: 30,
+  carrier: { name: 'Shipit', fee: 3 }
+},
+{
+  _id: ObjectId("61ba25cbfe687fce2f042415"),
+  item: 'bolts',
+  quantity: 50,
+  carrier: { name: 'Shipit', fee: 4 }
+}
+])
   
+
+
+db.Test.updateOne({"carrier.fee":{$gt:2}})
+
+
+db.Test.updateOne(
+   { "carrier.fee": { $gt: 2 } }, { $set: { "price": 9.99 } }
+)
+
+
+
+
+//db.inventory.find( { quantity: { $in: [ 5, 15 ] } }, { _id: 0 } )
+
+
+db.Task.find().pretty()
+
 db.orders.find().pretty()
 // stock > 50
 db.dashboard.find({ stock: { $gte: 50 } }).pretty()
@@ -150,7 +183,7 @@ db.dashboard.find({ stock: { $gte: 50 } }).pretty()
 
 
 //inclusion =1 
-db.dashboard.find({}, { username: 1, status: 1 }).pretty()
+db.COMDrives.find({}, { Name: 1, Students: 1 }).pretty()
 
 //exclusion  = 0
 db.dashboard.find({}, { username: 0, status: 0 }).pretty()
@@ -221,9 +254,68 @@ db.orders.aggregate([{ $match: { status: "Old" } }])
 db.orders.aggregate([{ $match: { status: "Old" } }, { $group: { _id: "$productName", totalUrgentQuantity: { $sum: "$quantity" } } }])
 
 
-// Task is for do to 
+// Task is for do to
 //===================
 // 1. update the language for all documents - English
 // 2. update  the username from Jay to Peter
-// 3. update the correct email id for all documents 
+// 3. update the correct email id for all documents
 // 4. delete all users with rating below 23
+/*
+Find all the topics and tasks which are thought in the month of October
+Find all the company drives which appeared between 15 oct-2020 and 31-oct-2020
+Find all the company drives and students who are appeared for the placement.
+Find the number of problems solved by the user in codekata
+Find all the mentors with who has the mentee's count more than 15
+Find the number of users who are absent and task is not submitted  between 15 oct-2020 and 31-oct-2020
+*/
+
+db.collection.findOne ( {
+  $or: [
+     { name: 1 },
+     { age: 1 }
+  ]
+})
+
+
+
+
+//Find all the company drives and students who are appeared for the placement.
+db.COMDrives.aggregate([{ $match: { Palcements: "Yes" } }, {
+  $group: {
+    _id: {
+      student: '$Students',
+      CompanyName: '$Name',
+       Palcements: '$Palcements',
+    }
+    }
+  }])
+
+  //Find all the company drives which appeared between 15 oct-2020 and 31-oct-2020
+
+
+
+db.COMDrives.aggregate([{ $match: { Month: { $gte: 10 / 11 / 23 } } },{ $group: { _id: "$Name", totalLikes: { $sum: "$Palcements" } }}]);
+
+db.COMDrives.find( { Month: { $gt: 10 / 11 / 23 } } )
+
+db.orders.aggregate([{
+  $group: {
+    _id:
+    {
+      CompanyName: "$Name",
+       Students: "$Students",
+    },
+    totalUrgentQuantity:
+    {
+        $sum: "$quantity"
+    }
+  }
+}])
+  
+
+
+
+//  Match Stage conditions
+
+
+db.peaks.find({$match:{"location":{$in:["Nepal","China"]}}})
